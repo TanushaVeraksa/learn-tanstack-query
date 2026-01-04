@@ -5,8 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "concurrently \"npm run dev:*\"",
-    "dev:server": "json-server",
-    "dev-client": "vite",
+    "dev:server": "json-server db.json",
+    "dev:client": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview"
