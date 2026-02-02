@@ -1,17 +1,18 @@
-import { useQuery } from "@tanstack/react-query";
-import { todoListApi } from "./api";
-import { useState } from "react";
+import { keepPreviousData, useQuery } from '@tanstack/react-query';
+import { todoListApi } from './api';
+import { useState } from 'react';
 
 const TodoList = () => {
   const [page, setPage] = useState(1);
 
-  const { data, error, isPending } = useQuery({
-    queryKey: ["tasks", "list"],
+  const { data, error, isPending, isPlaceholderData } = useQuery({
+    queryKey: ['tasks', 'list', { page }],
     queryFn: (meta) => todoListApi.getTodoList({ page }, meta),
+    placeholderData: keepPreviousData,
   });
 
   if (isPending) {
-    return <div>Pending...</div>;
+    return <div>Loading...</div>;
   }
 
   if (error) {
@@ -21,7 +22,11 @@ const TodoList = () => {
   return (
     <div className="p-5 mx-auto max-w-[1200px] mt-10">
       <h1 className="text-3xl font-bold underline mb-5">TodoList</h1>
-      <div className="flex flex-col gap-4 mb-4  ">
+      <div
+        className={
+          'flex flex-col gap-4 mb-4' + (isPlaceholderData ? ' opacity-50' : '')
+        }
+      >
         {data.data.map((todo) => (
           <div className="border border-slate-300 rounded p-3" key={todo.id}>
             {todo.text}
@@ -38,7 +43,7 @@ const TodoList = () => {
         onClick={() => setPage((p) => Math.min(p + 1, data.pages))}
         className="p-3 rounded border border-teal-500"
       >
-        next 
+        next
       </button>
     </div>
   );
