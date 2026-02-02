@@ -4,14 +4,33 @@ import { useState } from 'react';
 
 const TodoList = () => {
   const [page, setPage] = useState(1);
+  const [enabled, setEnabled] = useState(false);
 
-  const { data, error, isPending, isPlaceholderData } = useQuery({
-    queryKey: ['tasks', 'list', { page }],
-    queryFn: (meta) => todoListApi.getTodoList({ page }, meta),
-    placeholderData: keepPreviousData,
+  const {
+    data: todoItems, // ✅ данные запроса (тут — список задач)
+    error, // ❌ объект ошибки, если запрос упал
+    isPending, // ⏳ true, пока первый запрос ещё не завершился
+    isFetching, // 🔄 true, если в данный момент идёт любой fetch (новый или refetch)
+    isLoading, // ⏱ alias для первичного запроса (как isPending, зависит от версии)
+    status, // ℹ "pending" | "success" | "error" — общий статус запроса
+    fetchStatus, // ℹ "idle" | "fetching" | "paused" — более низкоуровневый статус fetch
+    isPlaceholderData, // 🟡 true, если сейчас используются временные/старые данные (placeholderData)
+  } = useQuery({
+    queryKey: ['tasks', 'list', { page }], // 🔑 уникальный ключ запроса (кэш + refetch зависит от него)
+    queryFn: (meta) => todoListApi.getTodoList({ page }, meta), // ⚡ функция, которая реально делает запрос
+    placeholderData: keepPreviousData, // 🟢 временные данные пока идёт новый fetch
+    enabled: enabled, // 🚦 можно включать/выключать авто-запрос (false — не делать запрос)
   });
 
-  if (isPending) {
+  console.log({
+    status,
+    fetchStatus,
+    isLoading,
+    isFetching,
+    isPending,
+  });
+
+  if (isLoading) {
     return <div>Loading...</div>;
   }
 
@@ -22,12 +41,15 @@ const TodoList = () => {
   return (
     <div className="p-5 mx-auto max-w-[1200px] mt-10">
       <h1 className="text-3xl font-bold underline mb-5">TodoList</h1>
+      <button onClick={() => setEnabled((enabled) => !enabled)}>
+        Toggle Enabled
+      </button>
       <div
         className={
           'flex flex-col gap-4 mb-4' + (isPlaceholderData ? ' opacity-50' : '')
         }
       >
-        {data.data.map((todo) => (
+        {todoItems?.data.map((todo) => (
           <div className="border border-slate-300 rounded p-3" key={todo.id}>
             {todo.text}
           </div>
@@ -40,7 +62,7 @@ const TodoList = () => {
         prev
       </button>
       <button
-        onClick={() => setPage((p) => Math.min(p + 1, data.pages))}
+        onClick={() => setPage((p) => Math.min(p + 1, todoItems?.pages ?? 1))}
         className="p-3 rounded border border-teal-500"
       >
         next
