@@ -16,8 +16,7 @@ const TodoList = () => {
     fetchStatus, // ℹ "idle" | "fetching" | "paused" — более низкоуровневый статус fetch
     isPlaceholderData, // 🟡 true, если сейчас используются временные/старые данные (placeholderData)
   } = useQuery({
-    queryKey: ['tasks', 'list', { page }], // 🔑 уникальный ключ запроса (кэш + refetch зависит от него)
-    queryFn: (meta) => todoListApi.getTodoList({ page }, meta), // ⚡ функция, которая реально делает запрос
+    ...todoListApi.getTodoListQueryOptions({ page }),
     placeholderData: keepPreviousData, // 🟢 временные данные пока идёт новый fetch
     enabled: enabled, // 🚦 можно включать/выключать авто-запрос (false — не делать запрос)
   });

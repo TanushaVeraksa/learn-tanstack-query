@@ -1,4 +1,6 @@
-const BASE_URL = "http://localhost:3000";
+import { infiniteQueryOptions, queryOptions } from '@tanstack/react-query';
+
+const BASE_URL = 'http://localhost:3000';
 
 export type PaganatedResult<T> = {
   data: T[];
@@ -19,10 +21,28 @@ export type TodoDto = {
 export const todoListApi = {
   getTodoList: (
     { page }: { page: number },
-    { signal }: { signal: AbortSignal }
+    { signal }: { signal: AbortSignal },
   ) => {
     return fetch(`${BASE_URL}/tasks?_page=${page}&_per_page=10`, {
       signal,
     }).then((res) => res.json() as Promise<PaganatedResult<TodoDto>>);
+  },
+
+  getTodoListQueryOptions: ({ page }: { page: number }) => {
+    return queryOptions({
+      queryKey: ['tasks', 'list', { page }],
+      queryFn: (meta) => todoListApi.getTodoList({ page }, meta),
+    });
+  },
+
+  getTodoListInfinityQueryOptions: () => {
+    return infiniteQueryOptions({
+      queryKey: ['tasks', 'list'],
+      queryFn: (meta) =>
+        todoListApi.getTodoList({ page: meta.pageParam }, meta),
+      initialPageParam: 1,
+      getNextPageParam: (result) => result.next,
+      select: (result) => result.pages.flatMap((page) => page.data),
+    });
   },
 };
