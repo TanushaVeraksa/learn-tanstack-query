@@ -1,0 +1,67 @@
+.markdownBody {
+  line-height: 1.6;
+  font-size: 16px;
+  color: #2d2d2d;
+  word-break: break-word;
+}
+
+/* 🟠 Ссылки */
+.markdownBody a {
+  color: #ff7a00;
+  font-weight: 500;
+  text-decoration: none;
+  transition: 0.2s ease;
+}
+
+.markdownBody a:hover {
+  text-decoration: underline;
+  opacity: 0.85;
+}
+
+/* Заголовки */
+.markdownBody h1,
+.markdownBody h2,
+.markdownBody h3 {
+  margin-top: 16px;
+  margin-bottom: 8px;
+}
+
+/* Таблицы */
+.markdownBody table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 12px 0;
+  font-size: 14px;
+}
+
+.markdownBody th,
+.markdownBody td {
+  border: 1px solid #e2e2e2;
+  padding: 8px;
+}
+
+.markdownBody th {
+  background-color: #f7f7f7;
+  text-align: left;
+}
+
+/* Изображения */
+.markdownImage {
+  max-width: 100%;
+  height: auto;
+  border-radius: 10px;
+  margin: 10px 0;
+  object-fit: cover;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+/* Base64 изображения — ограничим */
+.base64Image {
+  max-height: 300px;
+}
+
+/* Чекбоксы */
+.markdownBody input[type="checkbox"] {
+  margin-right: 6px;
+  transform: scale(1.1);
+}

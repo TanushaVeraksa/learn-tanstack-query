@@ -35,10 +35,10 @@ const TodoList = () => {
         prev
       </button>
       <button
-        onClick={() => setPage((p) => Math.max(p + 1, data.pages))}
+        onClick={() => setPage((p) => Math.min(p + 1, data.pages))}
         className="p-3 rounded border border-teal-500"
       >
-        next
+        next 
       </button>
     </div>
   );
